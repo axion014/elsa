@@ -11,6 +11,7 @@
 //! The typical use case is having a global cache of strings or other data which the rest of the program borrows from.
 
 pub mod map;
+pub mod set;
 pub mod vec;
 
 #[cfg(feature = "indexmap")]

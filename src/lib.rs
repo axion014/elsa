@@ -22,6 +22,7 @@ pub mod index_set;
 pub mod sync;
 
 pub use map::FrozenMap;
+pub use set::FrozenSet;
 pub use vec::FrozenVec;
 
 #[cfg(feature = "indexmap")]

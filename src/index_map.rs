@@ -122,6 +122,33 @@ impl<K: Eq + Hash, V: StableDeref> FrozenIndexMap<K, V> {
         ret
     }
 
+    pub fn contains_key<Q: ?Sized>(&self, t: &Q) -> bool
+    where
+        K: Borrow<Q>,
+        Q: Hash + Eq,
+    {
+        assert!(!self.in_use.get());
+        self.in_use.set(true);
+        let ret = unsafe {
+            let map = self.map.get();
+            (*map).contains_key(t)
+        };
+        self.in_use.set(false);
+        ret
+    }
+
+    pub fn len(&self) -> usize {
+        unsafe {
+            let map = self.map.get();
+            (*map).len()
+        }
+    }
+
+    /// Returns true if the map contains no elements.
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     pub fn into_map(self) -> IndexMap<K, V> {
         self.map.into_inner()
     }
@@ -132,18 +159,6 @@ impl<K: Eq + Hash, V: StableDeref> FrozenIndexMap<K, V> {
     /// the 'frozen' contents.
     pub fn as_mut(&mut self) -> &mut IndexMap<K, V> {
         unsafe { &mut *self.map.get() }
-    }
-
-    /// Returns true if the map contains no elements.
-    pub fn is_empty(&self) -> bool {
-        assert!(!self.in_use.get());
-        self.in_use.set(true);
-        let ret = unsafe {
-            let map = self.map.get();
-            (*map).is_empty()
-        };
-        self.in_use.set(false);
-        ret
     }
 }
 

@@ -56,6 +56,10 @@ impl<T: StableDeref> FrozenVec<T> {
         }
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     pub fn iter(&self) -> Iter<T> {
         self.into_iter()
     }

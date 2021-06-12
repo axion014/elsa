@@ -92,6 +92,24 @@ impl<K: Eq + Hash, V: StableDeref> FrozenMap<K, V> {
         ret
     }
 
+    pub fn contains_key<Q: ?Sized>(&self, t: &Q) -> bool
+    where
+        K: Borrow<Q>,
+        Q: Hash + Eq,
+    {
+        let map = self.map.read().unwrap();
+        map.contains_key(t)
+    }
+
+    pub fn len(&self) -> usize {
+        let map = self.map.read().unwrap();
+        map.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     // TODO add more
 }
 
@@ -126,6 +144,15 @@ impl<T: StableDeref> FrozenVec<T> {
     pub fn get(&self, index: usize) -> Option<&T::Target> {
         let vec = self.vec.read().unwrap();
         unsafe { vec.get(index).map(|x| &*(&**x as *const T::Target)) }
+    }
+
+    pub fn len(&self) -> usize {
+        let vec = self.vec.read().unwrap();
+        vec.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
     }
 
     // TODO add more

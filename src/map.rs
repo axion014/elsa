@@ -107,6 +107,32 @@ impl<K: Eq + Hash, V: StableDeref> FrozenMap<K, V> {
         ret
     }
 
+    pub fn contains_key<Q: ?Sized>(&self, t: &Q) -> bool
+    where
+        K: Borrow<Q>,
+        Q: Hash + Eq,
+    {
+        assert!(!self.in_use.get());
+        self.in_use.set(true);
+        let ret = unsafe {
+            let map = self.map.get();
+            (*map).contains_key(t)
+        };
+        self.in_use.set(false);
+        ret
+    }
+
+    pub fn len(&self) -> usize {
+        unsafe {
+            let map = self.map.get();
+            (*map).len()
+        }
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     pub fn into_map(self) -> HashMap<K, V> {
         self.map.into_inner()
     }

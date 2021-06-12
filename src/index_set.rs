@@ -127,6 +127,32 @@ impl<T: Eq + Hash + StableDeref> FrozenIndexSet<T> {
         ret
     }
 
+    pub fn contains<Q: ?Sized>(&self, t: &Q) -> bool
+    where
+        T: Borrow<Q>,
+        Q: Hash + Eq,
+    {
+        assert!(!self.in_use.get());
+        self.in_use.set(true);
+        let ret = unsafe {
+            let map = self.set.get();
+            (*map).contains(t)
+        };
+        self.in_use.set(false);
+        ret
+    }
+
+    pub fn len(&self) -> usize {
+        unsafe {
+            let map = self.set.get();
+            (*map).len()
+        }
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     pub fn into_set(self) -> IndexSet<T> {
         self.set.into_inner()
     }

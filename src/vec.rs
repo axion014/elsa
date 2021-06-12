@@ -49,6 +49,7 @@ impl<T: StableDeref> FrozenVec<T> {
         }
     }
 
+    /// Returns the number of elements in the vector, also referred to as its ‘length’.
     pub fn len(&self) -> usize {
         unsafe {
             let vec = self.vec.get();
@@ -56,6 +57,7 @@ impl<T: StableDeref> FrozenVec<T> {
         }
     }
 
+    /// Returns true if the vector contains no elements.
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }

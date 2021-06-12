@@ -122,6 +122,22 @@ impl<K: Eq + Hash, V: StableDeref> FrozenIndexMap<K, V> {
         ret
     }
 
+    /// Returns `true` if the map contains a value for the specified key.
+    ///
+    /// The key may be any borrowed form of the map's key type, but
+    /// [`Hash`] and [`Eq`] on the borrowed form *must* match those for
+    /// the key type.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use elsa::FrozenIndexMap;
+    ///
+    /// let mut map = FrozenIndexMap::new();
+    /// map.insert(1, Box::new("a"));
+    /// assert_eq!(map.contains_key(&1), true);
+    /// assert_eq!(map.contains_key(&2), false);
+    /// ```
     pub fn contains_key<Q: ?Sized>(&self, t: &Q) -> bool
     where
         K: Borrow<Q>,
@@ -137,6 +153,7 @@ impl<K: Eq + Hash, V: StableDeref> FrozenIndexMap<K, V> {
         ret
     }
 
+    /// Returns the number of elements in the map.
     pub fn len(&self) -> usize {
         unsafe {
             let map = self.map.get();

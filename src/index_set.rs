@@ -127,6 +127,21 @@ impl<T: Eq + Hash + StableDeref> FrozenIndexSet<T> {
         ret
     }
 
+    /// Returns true if the set contains a value.
+    ///
+    /// The value may be any borrowed form of the set's value type, but
+    /// [`Hash`] and [`Eq`] on the borrowed form *must* match those for
+    /// the value type.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use elsa::FrozenIndexSet;
+    ///
+    /// let set: FrozenIndexSet<_> = [1, 2, 3].iter().cloned().map(|n| Box::new(n)).collect();
+    /// assert_eq!(set.contains(1), true);
+    /// assert_eq!(set.contains(2), false);
+    /// ```
     pub fn contains<Q: ?Sized>(&self, t: &Q) -> bool
     where
         T: Borrow<Q>,
@@ -142,6 +157,7 @@ impl<T: Eq + Hash + StableDeref> FrozenIndexSet<T> {
         ret
     }
 
+    /// Returns the number of elements in the set.
     pub fn len(&self) -> usize {
         unsafe {
             let map = self.set.get();
@@ -149,6 +165,7 @@ impl<T: Eq + Hash + StableDeref> FrozenIndexSet<T> {
         }
     }
 
+    /// Returns true if the set contains no elements.
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
